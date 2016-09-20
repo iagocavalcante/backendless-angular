@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html ng-app>
+<head>
+	<title></title>
+	<script src="http://code.angularjs.org/1.0.1/angular-1.0.1.min.js"></script>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+</head>
+<body ng-controller="LoginController">
+	<form ng-submit="cadastrarUsuario()">
+	<div class="form-group">
+    <label for="membroNome">Nome</label>
+    <input type="text" class="form-control" id="membroNome" ng-model="membro.nome" placeholder="Nome Completo">
+  </div>
+  <div class="form-group">
+    <label for="membroTelefone">Telefone</label>
+    <input type="text" class="form-control" id="membroTelefone" ng-model="membro.telefone" placeholder="Telefone">
+  </div>
+  <div class="form-group">
+    <label for="membroEmail">Email</label>
+    <input type="email" class="form-control" id="membroEmail" ng-model="membro.email" placeholder="Email">
+  </div>
+  <div class="form-group">
+    <label for="membroSenha">Senha</label>
+    <input type="password" id="membroSenha" class="form-control" ng-model="membro.senha" placeholder="Password">
+  </div>
+  
+  <button type="submit" class="btn btn-default">Cadastrar</button>
+</form>
+</body>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+<script src="http://api.backendless.com/sdk/js/latest/backendless.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+<script type="text/javascript">
+	
+	
+
+	function LoginController($scope){
+		var APPLICATION_ID = '<SUA CHAVE DA APLICACAO>',
+    	SECRET_KEY = '<SUA CHAVE DA APLICACAO JS>',
+    	VERSION = 'v1'; //default application version;
+		Backendless.initApp(APPLICATION_ID, SECRET_KEY, VERSION);
+		Backendless.enablePromises();
+
+		function sucesso(result) {
+			alert("Membro cadastrado com sucesso");
+    		console.log("user has registered");
+		}
+  
+		function erro(err) {
+			alert("Erro ao cadastrar membro - " + err.message);
+    		console.log("error message - " + err.message);
+    		console.log("error code - " + err.statusCode);
+		}
+
+		function Membros(args){
+			args = args || {};
+			this.nome = args.nome || "";
+			this.email = args.email || "";
+			this.telefone = args.telefone || "";
+			this.senha = args.senha || "";
+		}
+
+		$scope.cadastrarUsuario = function(){
+			var m = new Membros($scope.membro);
+			Backendless.Persistence.of(Membros).save(m).then(sucesso).catch(erro);
+			$scope.membro = {};
+		}
+	}
+</script>
+</html>
